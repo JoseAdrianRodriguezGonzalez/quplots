@@ -1,0 +1,5 @@
+# Ignorar carpetas generadas
+build/
+dist/
+*.egg-info/
+__pycache__/

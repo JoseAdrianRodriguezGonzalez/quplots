@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "quplots"
+dynamic = ["version"]
+description = 'Allows you to visualize and interact with plots that describes quantum phenoms'
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Adrian", email = "kerpador@gmail.com" },
+  {name="Isabel",email="isabelrocha31415@gmail.com"}
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = ['numpy>=1.23.0','matplotlib>=3.6.0','plotly>=5.0.0','scipy>=1.9.0']
+
+[project.urls]
+Documentation = "https://github.com/JoseAdrianRodriguezGonzalez/quplots#readme"
+Issues = "https://github.com/JoseAdrianRodriguezGonzalez/quplots/issues"
+Source = "https://github.com/JoseAdrianRodriguezGonzalez/quplots"
+
+
+[tool.hatch.version]
+path = "src/quplots/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/quplots tests}"
+
+[tool.coverage.run]
+source_pkgs = ["quplots", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/quplots/__about__.py",
+]
+
+[tool.coverage.paths]
+quplots = ["src/quplots", "*/quplots/src/quplots"]
+tests = ["tests", "*/quplots/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
