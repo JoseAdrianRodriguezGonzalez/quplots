@@ -4,8 +4,8 @@ from quplots import plots
 
 # Inserta la ruta absoluta del directorio src/ al path
 p=plots()
-e1=electron(2,1,0,2)
-#p.plot_radial_(e1, color="red", linestyle="--", label="Orbital 2p")
+e1=electron(3,1,0,5)
+p.plot_radial_(e1, color="red", linestyle="--", label="Orbital 2p")
 
 #p.plot_radial_(n=3, l=0, d=12, color="red", linewidth=2)
 #p.plot_wf_3d(e1)

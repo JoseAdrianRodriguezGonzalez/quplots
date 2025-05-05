@@ -17,13 +17,13 @@ class plots:
         super(plots, self).__init__(*args)
     def plot_radial_(self,elect=None,d=None,n=None,l=None,**plot_kwargs):
         if elect is not None and isinstance(elect,electron):
-            R_function=elect.compute_radial()
-            r=np.linspace(0,elect.getRadius(),1000)
             d=elect.getRadius()
+            r=np.linspace(0,d,1000)
+            R_function=radial(r,elect.getN(),elect.getL())
         else:
             r = np.linspace(0, d, 1000)
             R_function = radial(r, n, l)
-        plt.plot(r, r**2 * R_function**2)
+        plt.plot(r, r**2 * R_function**2,**plot_kwargs)
         plt.title(f'$R_{{n, l}}(r)$ distancia = {d}')
         plt.xlabel(r'$r [a_0]$')
         plt.ylabel(r'$R_nl(r) r^2$')
