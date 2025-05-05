@@ -37,9 +37,9 @@ class plots:
             surfacecolor=package[3]
             l_val,m_val=package[4],package[5]
         else:
-            x=R*np.sin(phi) * np.cos(theta)
-            y=R*np.sin(phi) * np.sin(theta)
-            z=R*np.cos(phi)
+            x=R*np.sin(theta) * np.cos(phi)
+            y=R*np.sin(theta) * np.sin(phi)
+            z=R*np.cos(theta)
             surfacecolor=fcolors
             l_val,m_val=l,m
         surface_args = {
