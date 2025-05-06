@@ -133,18 +133,19 @@ class plots:
         layout_kwargs = {k: v for k, v in kwargs_plot.items() if k not in isosurface_keys}
 
         fig = go.Figure(data=go.Isosurface(
-                x=x.flatten(),
-                y=y.flatten(),
-                z=z.flatten(),
-                value=abs(psi).flatten(),
-                isomin=-.75 * abs(psi).min(),
-                isomax=.75 * abs(psi).max(),
-                opacity=0.5,
-                surface_count=6,
-                caps=dict(x_show=False, y_show=False, z_show=False),
-                colorscale='RdBu',
-                **isosurface_kwargs
-            ))
+            x=x.flatten(),
+            y=y.flatten(),
+            z=z.flatten(),
+            value=abs(psi).flatten(),
+            isomin=isosurface_kwargs.pop('isomin', -0.75 * abs(psi).min()),
+            isomax=isosurface_kwargs.pop('isomax', 0.75 * abs(psi).max()),
+            opacity=isosurface_kwargs.pop('opacity', 0.5),
+            surface_count=isosurface_kwargs.pop('surface_count', 6),
+            caps=isosurface_kwargs.pop('caps', dict(x_show=False, y_show=False, z_show=False)),
+            colorscale=isosurface_kwargs.pop('colorscale', 'RdBu'),
+            **isosurface_kwargs
+        ))
+
         n_val,l_val,m_val=elect.getN(),elect.getL(),elect.getM()
         fig.update_layout(
             title = f"<b>|ψ<sub>{n_val},{l_val},{m_val}</sub>(x,y,z)|</b>",
@@ -158,29 +159,40 @@ class plots:
             **layout_kwargs
         )
         fig.show()
-    def plot_sp(self,**kwargs):
+    def plot_sp(self, **kwargs):
         PSI1, PSI2 = sp()
-        packageCartesian=Cartesian_definition()
-        layout_kwargs = kwargs.get('layout', {})
-        isosurface_kwargs = kwargs.get('isosurface', {})
-        # Grafico
+        x, y, z = Cartesian_definition()
+        isosurface_keys = {
+            "colorscale", "isomin", "isomax", "opacity", "surface_count",
+            "caps", "lighting", "lightposition", "reversescale",
+            "showscale", "name", "hoverinfo"
+        }
+        isosurface_kwargs = {k: v for k, v in kwargs.items() if k in isosurface_keys}
+        layout_kwargs = {k: v for k, v in kwargs.items() if k not in isosurface_keys}
+        opacity = isosurface_kwargs.pop("opacity", 0.5)
+        surface_count = isosurface_kwargs.pop("surface_count", 6)
+        isomin_user = isosurface_kwargs.pop("isomin", None)
+        isomax_user = isosurface_kwargs.pop("isomax", None)
         fig = go.Figure()
-        for psi in [PSI1,PSI2]:
+        for psi in [PSI1, PSI2]:
+            psi_abs = abs(psi)
+            isomin = isomin_user if isomin_user is not None else -0.75 * psi_abs.min()
+            isomax = isomax_user if isomax_user is not None else 0.75 * psi_abs.max()
             fig.add_trace(go.Isosurface(
-                x=packageCartesian[0].flatten(),
-                y=packageCartesian[1].flatten(),
-                z=packageCartesian[2].flatten(),
-                value=abs(psi).flatten(),
-                #colorscale='RdYlBu_r',
-                isomin=-.75 * abs(psi).min(),
-                isomax=.75 * abs(psi).max(),
-                surface_count=6,
-                opacity=0.5,
+                x=x.flatten(),
+                y=y.flatten(),
+                z=z.flatten(),
+                value=psi_abs.flatten(),
+                isomin=isomin,
+                isomax=isomax,
+                surface_count=surface_count,
+                opacity=opacity,
                 caps=dict(x_show=False, y_show=False, z_show=False),
                 **isosurface_kwargs
             ))
+
         fig.update_layout(
-            title = layout_kwargs.get("title", "<b>sp: Lineal</b>"),
+            title=layout_kwargs.get("title", "<b>sp: Lineal</b>"),
             paper_bgcolor=layout_kwargs.get('paper_bgcolor', "black"),
             scene=layout_kwargs.get('scene', dict(
                 xaxis=dict(visible=False),
@@ -190,30 +202,41 @@ class plots:
             font=layout_kwargs.get('font', dict(color="white")),
             **{k: v for k, v in layout_kwargs.items() if k not in ['title', 'paper_bgcolor', 'scene', 'font']}
         )
+
         fig.show()
-    def plot_sp2(self,**kwargs):
+    def plot_sp2(self, **kwargs):
         PSI2_1, PSI2_2, PSI2_3 = sp2()
-        # Grafico
-        packageCartesian=Cartesian_definition()
-        layout_kwargs = kwargs.get('layout', {})
-        isosurface_kwargs = kwargs.get('isosurface', {})
+        x, y, z = Cartesian_definition()
+        isosurface_keys = {
+            "colorscale", "isomin", "isomax", "opacity", "surface_count",
+            "caps", "lighting", "lightposition", "reversescale",
+            "showscale", "name", "hoverinfo"
+        }
+        isosurface_kwargs = {k: v for k, v in kwargs.items() if k in isosurface_keys}
+        layout_kwargs = {k: v for k, v in kwargs.items() if k not in isosurface_keys}
+        opacity = isosurface_kwargs.pop("opacity", 0.5)
+        surface_count = isosurface_kwargs.pop("surface_count", 6)
+        isomin_user = isosurface_kwargs.pop("isomin", None)
+        isomax_user = isosurface_kwargs.pop("isomax", None)
         fig = go.Figure()
-        for psi in [PSI2_1,PSI2_2,PSI2_3]:
+        for psi in [PSI2_1, PSI2_2, PSI2_3]:
+            psi_abs = abs(psi)
+            isomin = isomin_user if isomin_user is not None else -0.75 * psi_abs.min()
+            isomax = isomax_user if isomax_user is not None else 0.75 * psi_abs.max()
             fig.add_trace(go.Isosurface(
-                x=packageCartesian[0].flatten(),
-                y=packageCartesian[1].flatten(),
-                z=packageCartesian[2].flatten(),
-                value=abs(psi).flatten(),
-                #colorscale='RdYlBu_r',
-                isomin=-.75 * abs(psi).min(),
-                isomax=.75 * abs(psi).max(),
-                surface_count=6,
-                opacity=0.5,
+                x=x.flatten(),
+                y=y.flatten(),
+                z=z.flatten(),
+                value=psi_abs.flatten(),
+                isomin=isomin,
+                isomax=isomax,
+                surface_count=surface_count,
+                opacity=opacity,
                 caps=dict(x_show=False, y_show=False, z_show=False),
                 **isosurface_kwargs
             ))
         fig.update_layout(
-            title = layout_kwargs.get("title", "<b>sp<sup>2</sup>: Trigonal Planar</b>"),
+            title=layout_kwargs.get("title", "<b>sp<sup>2</sup>: Trigonal Planar</b>"),
             paper_bgcolor=layout_kwargs.get('paper_bgcolor', "black"),
             scene=layout_kwargs.get('scene', dict(
                 xaxis=dict(visible=False),
@@ -223,29 +246,40 @@ class plots:
             font=layout_kwargs.get('font', dict(color="white")),
             **{k: v for k, v in layout_kwargs.items() if k not in ['title', 'paper_bgcolor', 'scene', 'font']}
         )
-        fig.show()
-    def plot_sp3(self,**kwargs):
+        fig.show()    
+    def plot_sp3(self, **kwargs):
         PSI3_1, PSI3_2, PSI3_3, PSI3_4 = sp3()
-        packageCartesian=Cartesian_definition()
-        layout_kwargs = kwargs.get('layout', {})
-        isosurface_kwargs = kwargs.get('isosurface', {})
+        x, y, z = Cartesian_definition()
+        isosurface_keys = {
+            "colorscale", "isomin", "isomax", "opacity", "surface_count",
+            "caps", "lighting", "lightposition", "reversescale",
+            "showscale", "name", "hoverinfo"
+        }
+        isosurface_kwargs = {k: v for k, v in kwargs.items() if k in isosurface_keys}
+        layout_kwargs = {k: v for k, v in kwargs.items() if k not in isosurface_keys}
+        opacity = isosurface_kwargs.pop("opacity", 0.5)
+        surface_count = isosurface_kwargs.pop("surface_count", 6)
+        isomin_user = isosurface_kwargs.pop("isomin", None)
+        isomax_user = isosurface_kwargs.pop("isomax", None)
         fig = go.Figure()
-        for psi in [PSI3_1,PSI3_2,PSI3_3,PSI3_4]:
+        for psi in [PSI3_1, PSI3_2, PSI3_3, PSI3_4]:
+            psi_abs = abs(psi)
+            isomin = isomin_user if isomin_user is not None else -0.75 * psi_abs.min()
+            isomax = isomax_user if isomax_user is not None else 0.75 * psi_abs.max()
             fig.add_trace(go.Isosurface(
-                x=packageCartesian[0].flatten(),
-                y=packageCartesian[1].flatten(),
-                z=packageCartesian[2].flatten(),
-                value=abs(psi).flatten(),
-                #colorscale='RdYlBu_r',
-                isomin=-.75 * abs(psi).min(),
-                isomax=.75 * abs(psi).max(),
-                surface_count=6,
-                opacity=0.5,
+                x=x.flatten(),
+                y=y.flatten(),
+                z=z.flatten(),
+                value=psi_abs.flatten(),
+                isomin=isomin,
+                isomax=isomax,
+                surface_count=surface_count,
+                opacity=opacity,
                 caps=dict(x_show=False, y_show=False, z_show=False),
                 **isosurface_kwargs
             ))
         fig.update_layout(
-            title = layout_kwargs.get("title", "<b>sp<sup>3</sup>: Tetrahedral</b>"),
+            title=layout_kwargs.get("title", "<b>sp<sup>3</sup>: Tetrahedral</b>"),
             paper_bgcolor=layout_kwargs.get('paper_bgcolor', "black"),
             scene=layout_kwargs.get('scene', dict(
                 xaxis=dict(visible=False),
@@ -256,28 +290,39 @@ class plots:
             **{k: v for k, v in layout_kwargs.items() if k not in ['title', 'paper_bgcolor', 'scene', 'font']}
         )
         fig.show()
-    def plot_sp2d(self,**kwargs):
-        PSI2D_1,PSI2D_2,PSI2D_3,PSI2D_4 = sp2d()
-        packageCartesian=Cartesian_definition()
-        layout_kwargs = kwargs.get('layout', {})
-        isosurface_kwargs = kwargs.get('isosurface', {})
+    def plot_sp2d(self, **kwargs):
+        PSI2D_1, PSI2D_2, PSI2D_3, PSI2D_4 = sp2d()
+        x, y, z = Cartesian_definition()
+        isosurface_keys = {
+            "colorscale", "isomin", "isomax", "opacity", "surface_count",
+            "caps", "lighting", "lightposition", "reversescale",
+            "showscale", "name", "hoverinfo"
+        }
+        isosurface_kwargs = {k: v for k, v in kwargs.items() if k in isosurface_keys}
+        layout_kwargs = {k: v for k, v in kwargs.items() if k not in isosurface_keys}
+        opacity = isosurface_kwargs.pop("opacity", 0.5)
+        surface_count = isosurface_kwargs.pop("surface_count", 6)
+        isomin_user = isosurface_kwargs.pop("isomin", None)
+        isomax_user = isosurface_kwargs.pop("isomax", None)
         fig = go.Figure()
-        for psi in [PSI2D_1,PSI2D_2,PSI2D_3,PSI2D_4]:
+        for psi in [PSI2D_1, PSI2D_2, PSI2D_3, PSI2D_4]:
+            psi_abs = abs(psi)
+            isomin = isomin_user if isomin_user is not None else -0.75 * psi_abs.min()
+            isomax = isomax_user if isomax_user is not None else 0.75 * psi_abs.max()
             fig.add_trace(go.Isosurface(
-                x=packageCartesian[0].flatten(),
-                y=packageCartesian[1].flatten(),
-                z=packageCartesian[2].flatten(),
-                value=abs(psi).flatten(),
-                #colorscale='RdYlBu_r',
-                isomin=-.75 * abs(psi).min(),
-                isomax=.75 * abs(psi).max(),
-                surface_count=6,
-                opacity=0.5,
+                x=x.flatten(),
+                y=y.flatten(),
+                z=z.flatten(),
+                value=psi_abs.flatten(),
+                isomin=isomin,
+                isomax=isomax,
+                surface_count=surface_count,
+                opacity=opacity,
                 caps=dict(x_show=False, y_show=False, z_show=False),
                 **isosurface_kwargs
             ))
         fig.update_layout(
-            title = layout_kwargs.get("title", "<b>sp<sup>2</sup>d: Square Planar</b>"),
+            title=layout_kwargs.get("title", "<b>sp<sup>2</sup>d: Square Planar</b>"),
             paper_bgcolor=layout_kwargs.get('paper_bgcolor', "black"),
             scene=layout_kwargs.get('scene', dict(
                 xaxis=dict(visible=False),
@@ -288,28 +333,39 @@ class plots:
             **{k: v for k, v in layout_kwargs.items() if k not in ['title', 'paper_bgcolor', 'scene', 'font']}
         )
         fig.show()
-    def plot_sp3d(self,**kwargs): 
+    def plot_sp3d(self, **kwargs): 
         PSIP3D_1, PSIP3D_2, PSIP3D_3, PSIP3D_4, PSIP3D_5 = sp3d()
-        packageCartesian=Cartesian_definition()
-        layout_kwargs = kwargs.get('layout', {})
-        isosurface_kwargs = kwargs.get('isosurface', {})
+        x, y, z = Cartesian_definition()
+        isosurface_keys = {
+            "colorscale", "isomin", "isomax", "opacity", "surface_count",
+            "caps", "lighting", "lightposition", "reversescale",
+            "showscale", "name", "hoverinfo"
+        }
+        isosurface_kwargs = {k: v for k, v in kwargs.items() if k in isosurface_keys}
+        layout_kwargs = {k: v for k, v in kwargs.items() if k not in isosurface_keys}
+        opacity = isosurface_kwargs.pop("opacity", 0.5)
+        surface_count = isosurface_kwargs.pop("surface_count", 6)
+        isomin_user = isosurface_kwargs.pop("isomin", None)
+        isomax_user = isosurface_kwargs.pop("isomax", None)
         fig = go.Figure()
         for psi in [PSIP3D_1, PSIP3D_2, PSIP3D_3, PSIP3D_4, PSIP3D_5]:    
+            psi_abs = abs(psi)
+            isomin = isomin_user if isomin_user is not None else -0.75 * psi_abs.min()
+            isomax = isomax_user if isomax_user is not None else 0.75 * psi_abs.max()
             fig.add_trace(go.Isosurface(
-                x=packageCartesian[0].flatten(),
-                y=packageCartesian[1].flatten(),
-                z=packageCartesian[2].flatten(),
-                value=abs(psi).flatten(),
-                #colorscale='RdYlBu_r', #colorscale='Portland',
-                isomin=-.75 * abs(psi).min(),
-                isomax=.75 * abs(psi).max(),
-                surface_count=6,
-                opacity=0.5,
+                x=x.flatten(),
+                y=y.flatten(),
+                z=z.flatten(),
+                value=psi_abs.flatten(),
+                isomin=isomin,
+                isomax=isomax,
+                surface_count=surface_count,
+                opacity=opacity,
                 caps=dict(x_show=False, y_show=False, z_show=False),
                 **isosurface_kwargs
             ))
         fig.update_layout(
-            title = layout_kwargs.get("title", "<b>sp<sup>3</sup>d: Trigonal Bipyramidal</b>"),
+            title=layout_kwargs.get("title", "<b>sp<sup>3</sup>d: Trigonal Bipyramidal</b>"),
             paper_bgcolor=layout_kwargs.get('paper_bgcolor', "black"),
             scene=layout_kwargs.get('scene', dict(
                 xaxis=dict(visible=False),
@@ -320,28 +376,39 @@ class plots:
             **{k: v for k, v in layout_kwargs.items() if k not in ['title', 'paper_bgcolor', 'scene', 'font']}
         )
         fig.show()
-    def plot_sp3d2(self,**kwargs):
-        PSIP3D2_1,PSIP3D2_2,PSIP3D2_3,PSIP3D2_4,PSIP3D2_5,PSIP3D2_6 = sp3d2()
-        packageCartesian=Cartesian_definition()
-        layout_kwargs = kwargs.get('layout', {})
-        isosurface_kwargs = kwargs.get('isosurface', {})
+    def plot_sp3d2(self, **kwargs):
+        PSIP3D2_1, PSIP3D2_2, PSIP3D2_3, PSIP3D2_4, PSIP3D2_5, PSIP3D2_6 = sp3d2()
+        x, y, z = Cartesian_definition()
+        isosurface_keys = {
+            "colorscale", "isomin", "isomax", "opacity", "surface_count",
+            "caps", "lighting", "lightposition", "reversescale",
+            "showscale", "name", "hoverinfo"
+        }
+        isosurface_kwargs = {k: v for k, v in kwargs.items() if k in isosurface_keys}
+        layout_kwargs = {k: v for k, v in kwargs.items() if k not in isosurface_keys}
+        opacity = isosurface_kwargs.pop("opacity", 0.5)
+        surface_count = isosurface_kwargs.pop("surface_count", 6)
+        isomin_user = isosurface_kwargs.pop("isomin", None)
+        isomax_user = isosurface_kwargs.pop("isomax", None)
         fig = go.Figure()
-        for psi in [PSIP3D2_1,PSIP3D2_2,PSIP3D2_3,PSIP3D2_4,PSIP3D2_5,PSIP3D2_6]:
+        for psi in [PSIP3D2_1, PSIP3D2_2, PSIP3D2_3, PSIP3D2_4, PSIP3D2_5, PSIP3D2_6]:
+            psi_abs = abs(psi)
+            isomin = isomin_user if isomin_user is not None else -0.75 * psi_abs.min()
+            isomax = isomax_user if isomax_user is not None else 0.75 * psi_abs.max()
             fig.add_trace(go.Isosurface(
-                x=packageCartesian[0].flatten(),
-                y=packageCartesian[1].flatten(),
-                z=packageCartesian[2].flatten(),
-                value=abs(psi).flatten(),
-                #colorscale='RdYlBu_r', #colorscale='Portland',
-                isomin=-.75 * abs(psi).min(),
-                isomax=.75 * abs(psi).max(),
-                surface_count=6,
-                opacity=0.5,
+                x=x.flatten(),
+                y=y.flatten(),
+                z=z.flatten(),
+                value=psi_abs.flatten(),
+                isomin=isomin,
+                isomax=isomax,
+                surface_count=surface_count,
+                opacity=opacity,
                 caps=dict(x_show=False, y_show=False, z_show=False),
                 **isosurface_kwargs
             ))
         fig.update_layout(
-            title = layout_kwargs.get("title", "<b>sp<sup>3</sup>d<sup>2</sup>: Octahedral</b>"),
+            title=layout_kwargs.get("title", "<b>sp<sup>3</sup>d<sup>2</sup>: Octahedral</b>"),
             paper_bgcolor=layout_kwargs.get('paper_bgcolor', "black"),
             scene=layout_kwargs.get('scene', dict(
                 xaxis=dict(visible=False),
@@ -351,4 +418,4 @@ class plots:
             font=layout_kwargs.get('font', dict(color="white")),
             **{k: v for k, v in layout_kwargs.items() if k not in ['title', 'paper_bgcolor', 'scene', 'font']}
         )
-        fig.show()      
+        fig.show()

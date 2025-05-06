@@ -28,7 +28,7 @@ class electron:
     def compute_imaginary_spherical(self):
         return ImaginarySpherical(self.l, self.m)
 
-    def compute_wavefunction_2D(self, d=20):
+    def compute_wavefunction_2D(self, d=2000):
         return normalized_wf(d, self.n, self.l, self.m)
 
     def compute_wavefunction_3D(self):
