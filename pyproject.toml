@@ -9,7 +9,7 @@ description = 'Allows you to visualize and interact with plots that describes qu
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
-keywords = []
+keywords = ["quantum", "plots", "visualization", "interactive", "physics"]
 authors = [
   { name = "Adrian", email = "kerpador@gmail.com" },
   {name="Isabel",email="isabelrocha31415@gmail.com"}
@@ -24,6 +24,9 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Physics",
+  "Topic :: Scientific/Engineering :: Visualization",
 ]
 dependencies = ['numpy>=1.23.0','matplotlib>=3.6.0','plotly>=5.0.0','scipy>=1.9.0']
 
