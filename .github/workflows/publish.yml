@@ -1,0 +1,75 @@
+name: Publish QuPlots 
+on:
+  push:
+    tags:
+      - "v*"
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4 
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Set up Python 
+        uses: actions/setup-python@v5 
+        with: 
+          python-version: "3.11"
+      
+      - name: Install build tools
+        run: |
+          python -m pip install --upgrade pip 
+          pip install build "twine==6.2.0" 
+      - name: Check versions
+        run: |
+          python --version
+          twine --version 
+      - name: Build package 
+        run: | 
+          rm -rf dist build 
+          python -m build 
+          
+      - name: Inspect Package 
+        run: |
+          ls -lah dist
+          unzip -p dist/*.whl '*METADATA' | head -20
+      #TestPyPi 
+      - name: Debug twine config
+        run: |
+          echo "HOME=$HOME"
+          ls -la ~
+          test -f ~/.pypirc && cat ~/.pypirc || echo "No .pypirc"
+      - name: Show versions
+        run: |
+          python -m pip show twine
+          python -m pip show requests
+      - name: Debug Twine credentials
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        run: |
+          echo "USERNAME=$TWINE_USERNAME"
+          echo "PASSWORD length=${#TWINE_PASSWORD}"
+          echo "PASSWORD start=${TWINE_PASSWORD:0:10}"
+      - name: Publish wheel to Test PyPi 
+        if: "contains(github.ref_name, 'rc')"
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        run: |
+          python -m twine upload \
+            --verbose \
+            --non-interactive \
+            --repository-url https://test.pypi.org/legacy/ \
+            --username "$TWINE_USERNAME" \
+            --password "$TWINE_PASSWORD" \
+            dist/*   
+      - name: Publish to PyPi 
+        if: "!contains(github.ref_name, 'rc')"
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          twine upload  dist/*
