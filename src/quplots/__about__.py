@@ -2,4 +2,4 @@
 #
 # SPDX-License-Identifier: MIT
 # __version__ = "0.0.2a4"
-__version__ = "0.0.3"
+__version__ = "0.0.7"
