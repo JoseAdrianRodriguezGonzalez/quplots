@@ -223,8 +223,9 @@ class plots:
         )
 
         n_val, l_val, m_val = elect.getN(), elect.getL(), elect.getM()
+        plot_title = layout_kwargs.pop("title", f"<b>|ψ<sub>{n_val},{l_val},{m_val}</sub>(x,y,z)|</b>")
         fig.update_layout(
-            title=f"<b>|ψ<sub>{n_val},{l_val},{m_val}</sub>(x,y,z)|</b>",
+            title=plot_title,
             paper_bgcolor="black",
             scene=dict(
                 xaxis=dict(visible=False),
